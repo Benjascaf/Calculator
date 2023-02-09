@@ -22,18 +22,29 @@ function divide(...nums) {
 function operate(operator, a, b) {
     switch (operator) {
         case "addition":
-            return add(a,b);
+            return round(add(a,b), 8);
         case "substraction":
-            return substract(a,b);
+            return round(substract(a,b), 8);
         case "multiplication":
-            return multiply(a,b)
+            return round(multiply(a,b), 8)
         case "division":
-            return divide(a, b);
+            return round(divide(a, b), 8);
     }
 }
 
+function round(value, decimals) {
+    return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
+  }
+
 function evaluate() {
-    result = operate(operator, firstNumber, parseFloat(currNumber)).toString();
+    if (operator === "division" && currNumber === "0") {
+        clear();
+        changeDisplay("Quien te crees q sos pa?");
+        return;
+    }
+
+    let result;
+    result = !currNumber ? operate(operator, firstNumber, firstNumber).toString() : operate(operator, firstNumber, parseFloat(currNumber)).toString();
     currNumber = result;
     changeDisplay();
     operator = '';
@@ -44,28 +55,6 @@ function toggleDecimal (isDisabled) {
     decimalButton.disabled = isDisabled;
 }
 function receiveInput(button) { 
-    /*if ([...button.classList].includes("num")) {
-        !currNumber ? currNumber = button.textContent : currNumber += button.textContent;
-        changeDisplay();
-    } else if ([...button.classList].includes("operator")){
-        if (operator) {
-            evaluate();
-            return;
-        }
-        changeDisplay('');
-        operator = button.classList[0];
-        firstNumber = parseFloat(currNumber);
-        currNumber = '';
-    }  else if ([...button.classList].includes("clear")) {
-        changeDisplay('');
-        firstNumber = '';
-        currNumber = '';
-        operator = '';
-    } else  {
-        if (operator) {
-            evaluate();
-        }
-    } */
     switch (true) {
         case [...button.classList].includes("num"): 
             !currNumber ? currNumber = button.textContent : currNumber += button.textContent;
@@ -74,39 +63,43 @@ function receiveInput(button) {
         case [...button.classList].includes("operator"):
             if (operator) {
                 evaluate();
-                toggleDecimal(false);
                 break;
             }
             changeDisplay('');
             operator = button.classList[0];
             firstNumber = parseFloat(currNumber);
             currNumber = '';
-            toggleDecimal(false);
             break;
 
         case [...button.classList].includes("clear"):
-            changeDisplay('');
-            firstNumber = '';
-            currNumber = '';
-            operator = '';
-            toggleDecimal(false)
+            clear();
             break;
         case [...button.classList].includes("decimal"):
             currNumber += '.';
             changeDisplay();
-            toggleDecimal(true);
             break;
+            case [...button.classList].includes("delete"):
+                currNumber = currNumber.slice(0, -1);
+                changeDisplay();
+                break;
         default: 
             if (operator) {
                 evaluate();
-                toggleDecimal(false);
             }
     }
+}
+
+function clear() {
+    changeDisplay('');
+    firstNumber = '';
+    currNumber = '';
+    operator = '';
 }
 
 function changeDisplay(tobeDisplayed=currNumber) {
     const display = document.querySelector(".display");
     display.textContent = tobeDisplayed;
+    currNumber.includes('.') ? toggleDecimal(true) : toggleDecimal(false);
 }
 
 let currNumber;
