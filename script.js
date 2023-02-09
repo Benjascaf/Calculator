@@ -102,9 +102,16 @@ function changeDisplay(tobeDisplayed=currNumber) {
     currNumber.includes('.') ? toggleDecimal(true) : toggleDecimal(false);
 }
 
+function clickButton(event) {
+    const button = document.querySelector(`button[data-key=${event.code}]`);
+    if (button) button.click();
+}
+
 let currNumber;
 let firstNumber;
 let operator;
 
 const buttons = document.querySelectorAll("button");
 buttons.forEach(button => button.addEventListener("click",() => receiveInput(button)));
+
+window.addEventListener("keydown", e => clickButton(e));
