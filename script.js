@@ -44,8 +44,9 @@ function evaluate() {
     }
 
     let result;
-    result = !currNumber ? operate(operator, firstNumber, firstNumber).toString() : operate(operator, firstNumber, parseFloat(currNumber)).toString();
-    currNumber = result;
+    result = !currNumber ? operate(operator, firstNumber, firstNumber).toString() : operate(operator, firstNumber, parseFloat(currNumber));
+    if (result.toString().length > 11) result = result.toExponential(6);
+    currNumber = result.toString();
     changeDisplay();
     operator = '';
 } 
@@ -54,9 +55,14 @@ function toggleDecimal (isDisabled) {
     const decimalButton = document.querySelector(".decimal");
     decimalButton.disabled = isDisabled;
 }
+
+function isNumberTooLong() {
+    return currNumber && currNumber.length === 11;
+}
 function receiveInput(button) { 
     switch (true) {
         case [...button.classList].includes("num"): 
+            if (isNumberTooLong()) break;
             !currNumber ? currNumber = button.textContent : currNumber += button.textContent;
             changeDisplay();
             break;
@@ -75,13 +81,14 @@ function receiveInput(button) {
             clear();
             break;
         case [...button.classList].includes("decimal"):
+            if (currNumber.includes('.'))break;
             currNumber += '.';
             changeDisplay();
             break;
-            case [...button.classList].includes("delete"):
-                currNumber = currNumber.slice(0, -1);
-                changeDisplay();
-                break;
+        case [...button.classList].includes("delete"):
+            currNumber = currNumber.slice(0, -1);
+            changeDisplay();
+            break;
         default: 
             if (operator) {
                 evaluate();
@@ -90,7 +97,7 @@ function receiveInput(button) {
 }
 
 function clear() {
-    changeDisplay('');
+    changeDisplay();
     firstNumber = '';
     currNumber = '';
     operator = '';
@@ -98,8 +105,7 @@ function clear() {
 
 function changeDisplay(tobeDisplayed=currNumber) {
     const display = document.querySelector(".display");
-    display.textContent = tobeDisplayed;
-    currNumber.includes('.') ? toggleDecimal(true) : toggleDecimal(false);
+    tobeDisplayed ? display.textContent = tobeDisplayed : display.textContent = 0;
 }
 
 function clickButton(event) {
@@ -111,6 +117,7 @@ let currNumber;
 let firstNumber;
 let operator;
 
+changeDisplay();
 const buttons = document.querySelectorAll("button");
 buttons.forEach(button => button.addEventListener("click",() => receiveInput(button)));
 
