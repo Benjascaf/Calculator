@@ -1,20 +1,36 @@
 body {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     height: 100vh;
     align-items: center;
 }
 .calculator {
-    width: 200px;
+    min-width: 30em;
+    min-height: 30em;
     margin: auto;
     display: grid;
-    gap: 5px;
+    gap: 0.2em;
 }
 .display {
-    font-size: 2em;
+    background-color: #ffeecf;
+    font-size: 5em;
     grid-column: 1 / 4;
     text-align: right;
 }
 button {
-    padding: 10px;
+    padding: 1em;
+}
+.calculator {
+    border-radius: 5px;
+    background-color: black;
+    padding: .4em;
+}
+.num {
+    background-color: #4dccbd;
+}
+
+
+.operator {
+    background-color: #ff8484;
 }

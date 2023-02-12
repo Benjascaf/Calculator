@@ -97,10 +97,10 @@ function receiveInput(button) {
 }
 
 function clear() {
-    changeDisplay();
     firstNumber = '';
     currNumber = '';
     operator = '';
+    changeDisplay();
 }
 
 function changeDisplay(tobeDisplayed=currNumber) {
